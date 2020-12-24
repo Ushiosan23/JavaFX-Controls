@@ -119,7 +119,7 @@ publishing {
 
 			/* credentials */
 			credentials {
-				username = "Ushiosan23"
+				username = rootProject.properties["mavenUser"] as String? ?: ""
 				password = rootProject.properties["mavenPass"] as String? ?: ""
 			}
 		}
