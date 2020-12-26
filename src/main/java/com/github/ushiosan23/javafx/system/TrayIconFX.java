@@ -1,10 +1,12 @@
 package com.github.ushiosan23.javafx.system;
 
+import javafx.application.Platform;
 import javafx.embed.swing.SwingFXUtils;
 import javafx.scene.image.Image;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseListener;
@@ -26,12 +28,12 @@ public class TrayIconFX {
 	/**
 	 * Native system tray icon
 	 */
-	private final TrayIcon nativeTray;
+	private TrayIcon nativeTray;
 
 	/**
 	 * Default system tray instance
 	 */
-	private final SystemTray defaultSystemTray;
+	private SystemTray defaultSystemTray;
 
 	/* ---------------------------------------------------------
 	 *
@@ -50,6 +52,8 @@ public class TrayIconFX {
 		// Check platform support
 		if (!isPlatformSupport())
 			throw new UnsupportedOperationException("The system tray is not supported on the current platform.");
+		// Don't close application if last window is closed
+		Platform.setImplicitExit(false);
 		// Configure tray image
 		java.awt.Image trayImg = convertImage(image);
 		trayImg = trayImageScaled(trayImg);
@@ -168,22 +172,47 @@ public class TrayIconFX {
 		return nativeTray.getToolTip();
 	}
 
+	/**
+	 * Add mouse listener
+	 *
+	 * @param listener Target object listener
+	 */
 	public void addMouseListener(MouseListener listener) {
 		nativeTray.addMouseListener(listener);
 	}
 
+	/**
+	 * Remove mouse listener
+	 *
+	 * @param listener Target object listener
+	 */
 	public void removeMouseListener(MouseListener listener) {
 		nativeTray.removeMouseListener(listener);
 	}
 
+	/**
+	 * Remove mouse motion listener
+	 *
+	 * @param listener Target object listener
+	 */
 	public void removeMouseMotionListener(MouseMotionListener listener) {
 		nativeTray.removeMouseMotionListener(listener);
 	}
 
+	/**
+	 * Add action mouse listener
+	 *
+	 * @param listener Target object listener
+	 */
 	public void addActionListener(ActionListener listener) {
 		nativeTray.addActionListener(listener);
 	}
 
+	/**
+	 * Remove action mouse listener
+	 *
+	 * @param listener Target object listener
+	 */
 	public void removeActionListener(ActionListener listener) {
 		nativeTray.removeActionListener(listener);
 	}
@@ -209,10 +238,13 @@ public class TrayIconFX {
 	 * Attach tray icon to system
 	 */
 	public void attachToSystem() {
-		try {
-			defaultSystemTray.add(nativeTray);
-		} catch (AWTException ignored) {
-		}
+		// Attach tray to system tray (In Java Swing Thread)
+		runLater(() -> {
+			try {
+				defaultSystemTray.add(nativeTray);
+			} catch (AWTException ignored) {
+			}
+		});
 	}
 
 	/**
@@ -284,6 +316,15 @@ public class TrayIconFX {
 		graphics2D.dispose();
 
 		return resultImage;
+	}
+
+	/**
+	 * Run in swing thread
+	 *
+	 * @param runnable Target action to run
+	 */
+	private void runLater(Runnable runnable) {
+		SwingUtilities.invokeLater(runnable);
 	}
 
 }
