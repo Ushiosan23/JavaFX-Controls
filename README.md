@@ -15,7 +15,7 @@ repositories {
 
 
 dependencies {
-	implementation("com.github.ushiosan23:javafxcontrols:0.0.1")
+	implementation("com.github.ushiosan23:javafxcontrols:0.0.2")
 }
 ```
 
@@ -27,6 +27,6 @@ repositories {
 }
 
 dependencies {
-	implementation "com.github.ushiosan23:javafxcontrols:0.0.1"
+	implementation "com.github.ushiosan23:javafxcontrols:0.0.2"
 }
 ```
