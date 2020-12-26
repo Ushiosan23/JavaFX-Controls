@@ -5,13 +5,14 @@ import com.github.ushiosan23.javafx.dialogs.ExceptionAlert;
 import com.github.ushiosan23.javafx.notifications.Notification;
 import com.github.ushiosan23.javafx.system.TrayIconFX;
 import javafx.application.Application;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
+import javafx.application.Platform;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import org.junit.Test;
+
+import java.awt.*;
 
 public class TestApplication extends Application {
 
@@ -30,7 +31,16 @@ public class TestApplication extends Application {
 			trayIconFX = new TrayIconFX(image, "Tooltip");
 			trayIconFX.attachToSystem();
 
-			trayIconFX.addActionListener(e -> primaryStage.show());
+			trayIconFX.addActionListener(e -> Platform.runLater(primaryStage::show));
+
+			PopupMenu popupMenu = new PopupMenu();
+			popupMenu.add(new MenuItem("Quit"));
+
+			trayIconFX.setPopupMenu(popupMenu);
+			trayIconFX.addPopupItemSelectionListener(itm -> {
+				if (!itm.getActionCommand().equals("Quit")) return;
+				Platform.exit();
+			});
 		}
 
 		try {
@@ -42,10 +52,6 @@ public class TestApplication extends Application {
 			Scene scene = new Scene(box, 400, 400);
 			primaryStage.setScene(scene);
 			primaryStage.show();
-
-			primaryStage.focusedProperty().addListener((observable, oldValue, newValue) -> {
-				if (!newValue) primaryStage.hide();
-			});
 
 			// Force error
 			showNotification();
