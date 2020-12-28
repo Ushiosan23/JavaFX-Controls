@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<menu-bar>
+	<menu text="File" icon="@icons/picture.png">
+		<item text="Sub Item 1" id="SItm1"/>
+		<item text="Sub Item 2" id="SItm2"/>
+	</menu>
+	<menu text="Edit"/>
+	<menu text="View"/>
+</menu-bar>

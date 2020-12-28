@@ -18,6 +18,9 @@ public final class ImageUtils {
 	 *
 	 * --------------------------------------------------------- */
 
+	/**
+	 * This class cannot be instantiated
+	 */
 	private ImageUtils() {
 	}
 

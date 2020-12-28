@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<menu-context>
+	<item text="Item 1" id="Itm1" icon="@icons/picture.png"/>
+	<item text="Item 2" id="Itm2"/>
+	<separator/>
+	<menu text="Sub menu" id="Mn2">
+		<item text="Sub Item 1" id="SItm1"/>
+		<item text="Sub Item 2" id="SItm2"/>
+	</menu>
+	<item text="Item 3" id="SItm3"/>
+	<item text="Item 4" id="SItm4"/>
+</menu-context>
