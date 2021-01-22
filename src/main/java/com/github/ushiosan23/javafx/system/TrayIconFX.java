@@ -1,5 +1,6 @@
 package com.github.ushiosan23.javafx.system;
 
+import com.github.ushiosan23.javafx.utils.AWTImageUtils;
 import javafx.application.Platform;
 import javafx.embed.swing.SwingFXUtils;
 import javafx.scene.image.Image;
@@ -56,7 +57,7 @@ public class TrayIconFX {
 		Platform.setImplicitExit(false);
 		// Configure tray image
 		java.awt.Image trayImg = convertImage(image);
-		trayImg = trayImageScaled(trayImg);
+		trayImg = AWTImageUtils.scaleImageToTray(trayImg);
 		// Configure properties
 		defaultSystemTray = SystemTray.getSystemTray();
 		nativeTray = new TrayIcon(trayImg);
@@ -119,7 +120,7 @@ public class TrayIconFX {
 	 */
 	public void setImage(Image image) {
 		java.awt.Image awtImg = convertImage(image);
-		awtImg = trayImageScaled(awtImg);
+		awtImg = AWTImageUtils.scaleImageToTray(awtImg);
 		nativeTray.setImage(awtImg);
 	}
 
@@ -131,7 +132,7 @@ public class TrayIconFX {
 	public Image getImage() {
 		java.awt.Image awtImg = nativeTray.getImage();
 
-		return SwingFXUtils.toFXImage(getBufferedImage(awtImg), null);
+		return SwingFXUtils.toFXImage(AWTImageUtils.getBufferedImage(awtImg), null);
 	}
 
 	/**
@@ -251,7 +252,7 @@ public class TrayIconFX {
 	 * Remove tray icon from system
 	 */
 	public void detachToSystem() {
-		defaultSystemTray.remove(nativeTray);
+		runLater(() -> defaultSystemTray.remove(nativeTray));
 	}
 
 	/* ---------------------------------------------------------
@@ -283,39 +284,6 @@ public class TrayIconFX {
 	 */
 	private static java.awt.Image convertImage(Image image) {
 		return SwingFXUtils.fromFXImage(image, null);
-	}
-
-	/**
-	 * Get scaled image to use in system tray
-	 *
-	 * @param image Target image to scale
-	 * @return {@link java.awt.Image} Scaled image
-	 */
-	private static java.awt.Image trayImageScaled(java.awt.Image image) {
-		return image.getScaledInstance(16, 16, java.awt.Image.SCALE_SMOOTH);
-	}
-
-	/**
-	 * Get buffered image instance
-	 *
-	 * @param image Target image to transform
-	 * @return {@link BufferedImage} instance
-	 */
-	private static BufferedImage getBufferedImage(java.awt.Image image) {
-		if (image instanceof BufferedImage)
-			return (BufferedImage) image;
-
-		BufferedImage resultImage = new BufferedImage(
-			image.getWidth(null),
-			image.getHeight(null),
-			BufferedImage.TYPE_INT_ARGB
-		);
-
-		Graphics2D graphics2D = resultImage.createGraphics();
-		graphics2D.drawImage(image, 0, 0, null);
-		graphics2D.dispose();
-
-		return resultImage;
 	}
 
 	/**
